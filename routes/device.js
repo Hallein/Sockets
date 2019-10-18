@@ -1,8 +1,8 @@
 const express = require('express');
-const routes = express.Router();
+const router = express.Router();
 
 // Device request routes
-routes.post('/temperature', (req, res) => {
+router.post('/temperature', (req, res) => {
     const {id, secret} = req.body;
 
     if(!id || !secret){
@@ -21,7 +21,7 @@ routes.post('/temperature', (req, res) => {
     res.sendStatus(200);
 });
 
-module.exports = routes;
+module.exports = router;
 
 /*
 

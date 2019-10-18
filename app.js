@@ -1,29 +1,47 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var url = require('url');
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+const url = require('url');
+const expressJwt = require('express-jwt');
 
-// Set JSON type to request body
+// Dotenv initialization
+require('dotenv').config();
+
+// Set JSON type to request's body
 app.use(express.json())
 
 // Static files path
 app.use(express.static(__dirname + '/public'));
 
 // Middleware to pass 'io' object to routes file under /device
-app.use('/device', function(req, res, next){
+app.use('/api/device', function(req, res, next){
     req.io = io;
     next();
 });
 
-// Routes
-const deviceRoutes = require('./routes/sensor');
-app.use('/device', deviceRoutes);
+// Middleware JWT to protect routes
+const SECRET = { secret: process.env.SECRET };
+app.use(expressJwt(SECRET).unless({ 
+    path: ["/api/auth/login", "/api/device/temperaturex"] 
+}));
+
+// Device routes
+const deviceRoutes = require('./routes/device');
+app.use('/api/device', deviceRoutes);
+
+// Auth routes
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
 
 
 // Server start
-server.listen(8080, () => {
-    console.log('Server is running on http://localhost:8080');
+const PORT = process.env.PORT;
+server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+
+    // TODO: connect to mongodb
+    //
 });
 
 // Sockets connection setup

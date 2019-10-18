@@ -16,4 +16,4 @@ socket.on('temperature', message => console.log(message))
 socket.on('reconnect', () => {
     console.log('reconnecting...')
 	socket.emit('join_room', 'temperature')
-  })
+});
