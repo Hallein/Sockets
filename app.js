@@ -23,7 +23,7 @@ app.use('/api/device', function(req, res, next){
 // Middleware JWT to protect routes
 const SECRET = { secret: process.env.SECRET };
 app.use(expressJwt(SECRET).unless({ 
-    path: ["/api/auth/login", "/api/device/temperaturex"] 
+    path: ["/api/auth/login", "/api/device/temperaturex", "/api/auth/hash"] 
 }));
 
 // Device routes
